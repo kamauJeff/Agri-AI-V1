@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14% 10%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 45 93% 47%;
+    --secondary-foreground: 20 14% 10%;
+    --muted: 60 5% 96%;
+    --muted-foreground: 25 5% 45%;
+    --accent: 45 93% 95%;
+    --accent-foreground: 45 93% 25%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 6% 90%;
+    --input: 20 6% 90%;
+    --ring: 142 76% 36%;
+    --radius: 0.625rem;
+
+    /* AgriAI custom */
+    --brand-green: #16a34a;
+    --brand-amber: #d97706;
+    --brand-earth: #52522e;
+    --sidebar-width: 240px;
+  }
+
+  .dark {
+    --background: 20 14% 7%;
+    --foreground: 60 5% 96%;
+    --card: 20 14% 10%;
+    --card-foreground: 60 5% 96%;
+    --popover: 20 14% 10%;
+    --popover-foreground: 60 5% 96%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 45 70% 50%;
+    --secondary-foreground: 20 14% 7%;
+    --muted: 20 10% 16%;
+    --muted-foreground: 25 5% 60%;
+    --accent: 20 10% 16%;
+    --accent-foreground: 60 5% 96%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 20 6% 18%;
+    --input: 20 6% 18%;
+    --ring: 142 70% 45%;
+  }
+
+  * { @apply border-border; }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  h1, h2, h3 { @apply font-display; }
+}
+
+@layer components {
+  /* Skeleton loader */
+  .skeleton {
+    @apply rounded-md bg-muted;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 25%,
+      hsl(var(--muted-foreground) / 0.1) 50%,
+      hsl(var(--muted)) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply rounded-xl border bg-card p-5 shadow-sm transition-shadow hover:shadow-md;
+  }
+
+  /* Credit score ring */
+  .score-ring {
+    @apply relative flex items-center justify-center;
+  }
+
+  /* Page fade in */
+  .page-enter {
+    @apply animate-fade-in;
+  }
+
+  /* Alert badge */
+  .alert-high   { @apply bg-red-100 text-red-800 border-red-200; }
+  .alert-medium { @apply bg-amber-100 text-amber-800 border-amber-200; }
+  .alert-low    { @apply bg-blue-100 text-blue-800 border-blue-200; }
+}
+
+/* Leaflet map z-index fix */
+.leaflet-pane { z-index: 0 !important; }
+.leaflet-top, .leaflet-bottom { z-index: 10 !important; }

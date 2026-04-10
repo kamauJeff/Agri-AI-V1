@@ -1,0 +1,316 @@
+// ─── Generator & Datasource ───────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  FARMER
+  AGENT
+  ADMIN
+}
+
+enum SoilType {
+  CLAY
+  SANDY
+  LOAM
+  SILT
+  CLAY_LOAM
+  SANDY_LOAM
+  PEAT
+  CHALK
+}
+
+enum FieldStatus {
+  ACTIVE
+  FALLOW
+  PLANTED
+  HARVESTED
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PriceUnit {
+  KG
+  BAG_90KG
+  BAG_50KG
+  TON
+  CRATE
+  PIECE
+}
+
+enum CreditRating {
+  POOR
+  FAIR
+  GOOD
+  VERY_GOOD
+  EXCELLENT
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  DISBURSED
+  ACTIVE
+  DEFAULTED
+  CLOSED
+}
+
+enum LoanPurpose {
+  SEEDS
+  FERTILIZER
+  PESTICIDES
+  EQUIPMENT
+  IRRIGATION
+  LABOR
+  OTHER
+}
+
+enum Season {
+  LONG_RAINS
+  SHORT_RAINS
+  DRY
+}
+
+// ─── User ────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  phone        String   @unique
+  email        String?  @unique
+  passwordHash String
+  role         Role     @default(FARMER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  farms            Farm[]
+  refreshTokens    RefreshToken[]
+  creditScores     CreditScore[]
+  loanApplications LoanApplication[]
+  passwordResets   PasswordReset[]
+
+  @@index([phone])
+  @@index([email])
+}
+
+// ─── Auth ────────────────────────────────────────────────────────────────────
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  revokedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model PasswordReset {
+  id        String    @id @default(uuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
+
+// ─── Farm ────────────────────────────────────────────────────────────────────
+
+model Farm {
+  id              String   @id @default(uuid())
+  userId          String
+  name            String
+  county          String
+  subCounty       String
+  latitude        Float
+  longitude       Float
+  totalAreaAcres  Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fields        Field[]
+  weatherAlerts WeatherAlert[]
+
+  @@index([userId])
+  @@index([county])
+}
+
+// ─── Field ───────────────────────────────────────────────────────────────────
+
+model Field {
+  id                String      @id @default(uuid())
+  farmId            String
+  name              String
+  areaAcres         Float
+  soilType          SoilType
+  currentCrop       String?
+  plantedAt         DateTime?
+  expectedHarvestAt DateTime?
+  status            FieldStatus @default(ACTIVE)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  farm             Farm              @relation(fields: [farmId], references: [id], onDelete: Cascade)
+  yieldPredictions YieldPrediction[]
+
+  @@index([farmId])
+}
+
+// ─── Weather ─────────────────────────────────────────────────────────────────
+
+model WeatherAlert {
+  id        String        @id @default(uuid())
+  farmId    String
+  type      String
+  severity  AlertSeverity
+  message   String
+  expiresAt DateTime
+  sentViaSms Boolean      @default(false)
+  createdAt DateTime      @default(now())
+
+  farm Farm @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  @@index([farmId])
+}
+
+// ─── Market Prices ───────────────────────────────────────────────────────────
+
+model CropPrice {
+  id         String    @id @default(uuid())
+  crop       String
+  region     String
+  county     String
+  priceKes   Float
+  unit       PriceUnit
+  source     String    @default("AgriAI")
+  recordedAt DateTime  @default(now())
+
+  @@index([crop])
+  @@index([county])
+  @@index([region])
+  @@index([recordedAt])
+}
+
+// ─── Credit Scoring ──────────────────────────────────────────────────────────
+
+model CreditScore {
+  id                String       @id @default(uuid())
+  userId            String
+  score             Int
+  rating            CreditRating
+  maxLoanAmountKes  Float
+  factors           Json         // CreditFactor[]
+  computedAt        DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([computedAt])
+}
+
+// ─── Loans ───────────────────────────────────────────────────────────────────
+
+model LoanApplication {
+  id             String      @id @default(uuid())
+  userId         String
+  amountKes      Float
+  purpose        LoanPurpose
+  purposeDetails String?
+  termMonths     Int
+  interestRatePct Float
+  status         LoanStatus  @default(PENDING)
+  appliedAt      DateTime    @default(now())
+  approvedAt     DateTime?
+  disbursedAt    DateTime?
+  closedAt       DateTime?
+
+  // Relations
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repaymentSchedules RepaymentSchedule[]
+  transactions       Transaction[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model RepaymentSchedule {
+  id              String    @id @default(uuid())
+  loanId          String
+  dueDate         DateTime
+  principalKes    Float
+  interestKes     Float
+  totalKes        Float
+  paidAt          DateTime?
+  paidAmountKes   Float?
+  createdAt       DateTime  @default(now())
+
+  loan LoanApplication @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
+  @@index([loanId])
+  @@index([dueDate])
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  loanId        String
+  amountKes     Float
+  type          String   // DISBURSEMENT | REPAYMENT | PENALTY
+  reference     String?  // M-Pesa transaction ref
+  notes         String?
+  transactedAt  DateTime @default(now())
+
+  loan LoanApplication @relation(fields: [loanId], references: [id], onDelete: Cascade)
+
+  @@index([loanId])
+}
+
+// ─── AI Yield Predictions ────────────────────────────────────────────────────
+
+model YieldPrediction {
+  id                   String   @id @default(uuid())
+  fieldId              String
+  crop                 String
+  season               Season
+  areaAcres            Float
+  rainfallMm           Float
+  tempAvgC             Float
+  fertilizerUsed       Boolean
+  irrigated            Boolean
+  predictedYieldKg     Float
+  predictedYieldPerAcre Float
+  confidencePct        Float
+  estimatedRevenueKes  Float
+  recommendations      Json     // string[]
+  riskFactors          Json     // string[]
+  predictedAt          DateTime @default(now())
+
+  field Field @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@index([fieldId])
+}
