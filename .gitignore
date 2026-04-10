@@ -1,11 +1,45 @@
+# Dependencies
 node_modules/
 .pnpm-store/
+
+# Environment
 .env
 .env.local
+.env.*.local
+!.env.example
+
+# Build outputs
 dist/
 build/
+.next/
+
+# Expo / React Native
+.expo/
+expo-env.d.ts
+android/
+ios/
+*.apk
+*.ipa
+
+# Prisma
+apps/backend/prisma/migrations/*.sql.bak
+
+# Logs
+logs/
 *.log
+npm-debug.log*
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Editor
 .vscode/
 .idea/
+*.swp
+
+# Railway / Vercel
+.vercel/
+
+# EAS
+google-service-account.json

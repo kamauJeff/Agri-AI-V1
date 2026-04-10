@@ -1,9 +1,3 @@
 packages:
   - 'apps/*'
   - 'packages/*'
-allowBuilds:
-  '@prisma/client': true
-  '@prisma/engines': true
-  esbuild: true
-  grpc: true
-  prisma: true

@@ -6,7 +6,7 @@ type IconName = keyof typeof Ionicons.glyphMap
 
 const TABS: { name: string; title: string; icon: IconName; activeIcon: IconName }[] = [
   { name: 'dashboard', title: 'Home',    icon: 'home-outline',         activeIcon: 'home' },
-  { name: 'predict',   title: 'AI',      icon: 'leaf-outline',         activeIcon: 'leaf' },
+  { name: 'weather',   title: 'Weather', icon: 'cloud-outline',        activeIcon: 'cloud' },
   { name: 'market',    title: 'Market',  icon: 'storefront-outline',   activeIcon: 'storefront' },
   { name: 'credit',    title: 'Credit',  icon: 'card-outline',         activeIcon: 'card' },
   { name: 'loans',     title: 'Loans',   icon: 'cash-outline',         activeIcon: 'cash' },
