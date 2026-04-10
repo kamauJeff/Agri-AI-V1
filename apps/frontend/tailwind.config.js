@@ -7,7 +7,7 @@ export default {
       colors: {
         // AgriAI brand — deep earth green + warm amber
         brand: {
-          50:  '#f0fdf4',
+          50: '#f0fdf4',
           100: '#dcfce7',
           200: '#bbf7d0',
           300: '#86efac',
@@ -20,7 +20,7 @@ export default {
           950: '#052e16',
         },
         amber: {
-          50:  '#fffbeb',
+          50: '#fffbeb',
           100: '#fef3c7',
           200: '#fde68a',
           300: '#fcd34d',
@@ -32,7 +32,7 @@ export default {
           900: '#78350f',
         },
         earth: {
-          50:  '#fafaf5',
+          50: '#fafaf5',
           100: '#f2f2e8',
           200: '#e5e5d0',
           300: '#d0d0a8',
@@ -44,6 +44,41 @@ export default {
           900: '#282814',
         },
       },
+      // ========== ADDED: Border, Background, Text colors ==========
+      borderColor: {
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+      },
+      backgroundColor: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: 'hsl(var(--card))',
+        'card-foreground': 'hsl(var(--card-foreground))',
+        popover: 'hsl(var(--popover))',
+        'popover-foreground': 'hsl(var(--popover-foreground))',
+        primary: 'hsl(var(--primary))',
+        'primary-foreground': 'hsl(var(--primary-foreground))',
+        secondary: 'hsl(var(--secondary))',
+        'secondary-foreground': 'hsl(var(--secondary-foreground))',
+        muted: 'hsl(var(--muted))',
+        'muted-foreground': 'hsl(var(--muted-foreground))',
+        accent: 'hsl(var(--accent))',
+        'accent-foreground': 'hsl(var(--accent-foreground))',
+        destructive: 'hsl(var(--destructive))',
+        'destructive-foreground': 'hsl(var(--destructive-foreground))',
+      },
+      textColor: {
+        foreground: 'hsl(var(--foreground))',
+        card: 'hsl(var(--card-foreground))',
+        popover: 'hsl(var(--popover-foreground))',
+        primary: 'hsl(var(--primary-foreground))',
+        secondary: 'hsl(var(--secondary-foreground))',
+        muted: 'hsl(var(--muted-foreground))',
+        accent: 'hsl(var(--accent-foreground))',
+        destructive: 'hsl(var(--destructive-foreground))',
+      },
+      // ============================================================
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
